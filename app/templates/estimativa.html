@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Projeções{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5"> 
+    <h1 class="mb-4 text-center">Gerar Projeções</h1>
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h4>Consulta</h4>
+            <form action="/previsao" method="post" class="mb-3" id="form1">
+                <div class="mb-3">
+                    <label for="DateI1" class="form-label">Data Inicial:</label>
+                    <input type="date" name="DateI1" id="DateI1" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="DateF1" class="form-label">Data Final:</label>
+                    <input type="date" name="DateF1" id="DateF1" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="period1" class="form-label">Período:</label>
+                    <select name="period1" id="period1" class="form-select" required>
+                        <option value="D">Diário</option>
+                        <option value="W">Semanal</option>
+                        <option value="ME">Mensal</option>
+                        <option value="QE">Trimestral</option>
+                        <option value="YE">Anual</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-primary" id="recarregar1">Recarregar Gráfico</button>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <h4>Histórico</h4>
+            <div id="chart1"></div>
+        </div>
+    </div>
+
+    <hr class="my-5">
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h4>Projeção</h4>
+            <form action="/previsao" method="post" class="mb-3" id="form2">
+                <div class="mb-3">
+                    <label for="DateI2" class="form-label">Data Inicial:</label>
+                    <input type="date" name="DateI2" id="DateI2" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="DateF2" class="form-label">Data Final:</label>
+                    <input type="date" name="DateF2" id="DateF2" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="period2" class="form-label">Período:</label>
+                    <select name="period2" id="period2" class="form-select" required>
+                        <option value="D">Diário</option>
+                        <option value="W">Semanal</option>
+                        <option value="ME">Mensal</option>
+                        <option value="QE">Trimestral</option>
+                        <option value="YE">Anual</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="amostras" class="form-label">Quantidade de Amostras:</label>
+                    <input type="number" name="amostras" id="amostras" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="QuantPrevisao" class="form-label">Quantidade de Previsões:</label>
+                    <input type="number" name="QuantPrevisao" id="QuantPrevisao" class="form-control" required>
+                </div>
+                <button type="button" class="btn btn-primary mb-5" id="recarregar2">Recarregar Gráfico</button> <!-- Botão para recarregar -->
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <h4>Estimativa</h4>
+            <div id="chart2"></div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+       
+        $('#recarregar1').click(async function() {
+            $('#recarregar1').text('Processando').removeClass('btn-primary').addClass('btn-secondary').prop("disabled", true)
+             await $.ajax({
+                    url: '/previsao',
+                    method: 'POST',
+                    data: $('#form1').serialize(),
+                    success: function(data) {
+                        $('#chart1').html(data);                      
+                        var options = data.options;
+                        var chart1 = new ApexCharts(document.getElementById('chart1'), options);
+                        chart1.render();
+                    }
+            });
+            $('#recarregar1').text('Recarregar Gráfico').removeClass('btn-secondary').addClass('btn-primary').prop("disabled", false)
+        });
+        $('#recarregar2').click(async function() {
+            $('#recarregar2').text('Processando').removeClass('btn-primary').addClass('btn-secondary').prop("disabled", true)
+            await $.ajax({
+                    url: '/previsao',
+                    method: 'POST',
+                    data: $('#form2').serialize(),
+                    success: function(data) {
+                        $('#chart2').html(data);
+                        var options = data.options;
+                        var chart2 = new ApexCharts(document.getElementById('chart2'), options);
+                        chart2.render();
+                    }
+            });
+            $('#recarregar2').text('Recarregar Gráfico').removeClass('btn-secondary').addClass('btn-primary').prop("disabled", false)
+        });
+    });
+</script>
+{% endblock %}

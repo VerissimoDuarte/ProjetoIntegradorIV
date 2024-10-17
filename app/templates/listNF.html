@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Lista das Notas Fiscais</h1>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Numero Nota Fiscal</th>
+                    <th>Data</th>
+                    <th>Valor (R$)</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for nf in nfs.items %}
+                <tr>
+                    <td>{{ nf.NFId }}</td>
+                    <td>{{ nf.NFDate.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ '%.2f' | format(nf.NFValue) }}</td>
+                    <td>
+                        <a href="/registerNF/{{ nf.id }}" class="btn btn-warning btn-sm me-2">Editar</a>
+                        <a href="/registerNF/d/{{ nf.id }}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta Nota Fiscal?');">Excluir</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <nav>
+        <ul class="pagination justify-content-center">
+            {% if nfs.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('ControllerListNF', page=nfs.prev_num) }}">Anterior</a>
+                </li>
+            {% endif %}
+            {% for page in nfs.iter_pages() %}
+                {% if page %}
+                    <li class="page-item {{ 'active' if page == nfs.page else '' }}">
+                        <a class="page-link" href="{{ url_for('ControllerListNF', page=page) }}">{{ page }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><a class="page-link">...</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if nfs.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('ControllerListNF', page=nfs.next_num) }}">Próxima</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

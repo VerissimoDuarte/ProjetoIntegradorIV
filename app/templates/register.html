@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastro de Usuario{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h3 class="card-title mb-4 text-center">Cadastro de Usuário</h3>
+                    <form action="{{ '/register/' + usuario.id|string if usuario else '/register' }}" method="post">
+                        <div class="mb-3">
+                            <label for="usuario" class="form-label">Usuário:</label>
+                            <input type="text" class="form-control" name="usuario" id="usuario" placeholder="Nome do Usuário" value="{{ usuario.name if usuario else '' }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" class="form-control" name="email" id="email" placeholder="Email" value="{{ usuario.email if usuario else '' }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Senha:</label>
+                            <input type="password" class="form-control" name="password" id="password" placeholder="Senha" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Função:</label>
+                            <select class="form-select" name="role" id="role">
+                                <option value="user" {% if usuario and usuario.role == 'user' %}selected{% endif %}>Usuário</option>
+                                <option value="admin" {% if usuario and usuario.role == 'admin' %}selected{% endif %}>Administrador</option>
+                            </select>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-block">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
