@@ -1,6 +1,7 @@
 from datetime import timedelta
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import event
 from flask_migrate import Migrate
 from app.MachineLearn import MachineLearn
 from flask_bcrypt import Bcrypt
@@ -23,6 +24,7 @@ bcrypt = Bcrypt(application)
 login_manager = LoginManager(application)
 login_manager.login_view = 'login'
 
+
 from app.controllers.ControllerRegisterNF import *
 from app.controllers.ControllerLogin import *
 from app.controllers.ControllerUser import *
@@ -32,4 +34,3 @@ from app.models import *
 @login_manager.user_loader
 def load_user(userId):
      return User.query.get(int(userId))
-
